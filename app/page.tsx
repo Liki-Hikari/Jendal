@@ -101,7 +101,7 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#f7faf8]">
+    <main className="relative min-h-screen overflow-hidden bg-[#f7faf8] pt-20">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(22,163,74,0.10),transparent_32%),radial-gradient(circle_at_78%_14%,rgba(245,158,11,0.10),transparent_28%),linear-gradient(135deg,#ffffff_0%,#f7faf8_54%,#eef7f1_100%)]" />
         <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:72px_72px] opacity-35" />
