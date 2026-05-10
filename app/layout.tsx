@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './styles/globals.css';
+import { StickyHeader } from '@/components/layout/StickyHeader';
 
 export const metadata: Metadata = {
   title: 'JENDAL Marketplace',
@@ -13,27 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {/* JENDAL Logo Header */}
-        <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo */}
-              <a href="/" className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-emerald-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">J</span>
-                </div>
-                <span className="text-xl font-bold text-slate-900">JENDAL</span>
-              </a>
-
-              <nav className="flex items-center gap-4">
-                <a href="/" className="text-sm font-medium text-slate-600 hover:text-emerald-700 transition-colors">
-                  Home
-                </a>
-              </nav>
-            </div>
-          </div>
-        </header>
-
+        <StickyHeader />
         {children}
       </body>
     </html>
