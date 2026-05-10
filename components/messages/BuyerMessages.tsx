@@ -41,12 +41,12 @@ export function BuyerMessages({ userId }: BuyerMessagesProps) {
 
   useEffect(() => {
     const loadProducts = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('products')
         .select('*')
-        .eq('status' as any, 'available' as any)
-        .gt('quantity' as any, 0 as any)
-        .order('created_at' as any, { ascending: false });
+        .eq('status', 'available')
+        .gt('quantity', 0)
+        .order('created_at', { ascending: false });
       if (data) {
         setProducts(data as Product[]);
       }
@@ -55,11 +55,11 @@ export function BuyerMessages({ userId }: BuyerMessagesProps) {
   }, []);
 
   const loadMessages = async (currentUserId: string) => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('messages')
       .select('*')
       .or(`recipient_id.eq.${currentUserId},sender_id.eq.${currentUserId},broadcast.eq.true`)
-      .order('created_at' as any, { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (!error) {
       const messageRows = (data ?? []) as Message[];
@@ -73,7 +73,7 @@ export function BuyerMessages({ userId }: BuyerMessagesProps) {
       );
 
       if (participantIds.length > 0) {
-        const { data: profilesData } = await supabase.from('profiles').select('id,full_name').in('id', participantIds);
+        const { data: profilesData } = await (supabase as any).from('profiles').select('id,full_name').in('id', participantIds);
         if (profilesData) {
           setProfileMap(
             Object.fromEntries((profilesData as { id: string; full_name: string }[]).map((profile) => [profile.id, profile.full_name])),
@@ -150,7 +150,7 @@ export function BuyerMessages({ userId }: BuyerMessagesProps) {
       broadcast: false,
     };
 
-    const { error } = await (supabase.from('messages') as any).insert(messageData);
+    const { error } = await (supabase as any).from('messages').insert(messageData);
 
     if (error) {
       toast.error('Failed to send message');
