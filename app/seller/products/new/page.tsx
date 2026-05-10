@@ -54,17 +54,17 @@ export default function AddProductPage() {
         imageUrl = urlData.publicUrl;
       }
 
-      const { error: insertError } = await (supabase.from('products') as any).insert({
-        seller_id: user.id,
-        name: form.name,
-        description: form.description,
-        price: Number(form.price),
-        category: form.category,
-        location: form.location,
-        quantity: Number(form.quantity),
-        image_url: imageUrl,
-        status: 'available',
-      });
+      const { error: insertError } = await (supabase.from('products') as any).insert([{
+  seller_id: user.id,
+  name: form.name,
+  description: form.description,
+  price: Number(form.price),
+  category: form.category,
+  location: form.location,
+  quantity: Number(form.quantity),
+  image_url: imageUrl,
+  status: 'available',
+}]);
 
       if (insertError) throw insertError;
 
