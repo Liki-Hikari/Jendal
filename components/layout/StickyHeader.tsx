@@ -32,13 +32,13 @@ export function StickyHeader() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-20">
           <a href="/" className="flex items-center gap-3 group">
             {/* Glowing J box */}
             <div className="h-10 w-10 bg-emerald-500 rounded-lg flex items-center justify-center animate-glow">
               <span className="text-white font-bold text-xl">J</span>
             </div>
-            <span className="text-xl font-bold text-white drop-shadow-lg">Jendal</span>
+            <span className="text-xl font-bold text-slate-900">Jendal</span>
           </a>
         </div>
       </div>
