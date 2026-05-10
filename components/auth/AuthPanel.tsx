@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase-client';
 import { toast, Toaster } from 'react-hot-toast';
@@ -42,6 +43,7 @@ type Role = (typeof roles)[number]['value'];
 type AuthMode = 'login' | 'signup';
 
 export default function AuthPanel() {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -55,7 +57,6 @@ export default function AuthPanel() {
     if (mode === 'login') {
       return email.length > 5 && password.length >= 6;
     }
-
     return name.length >= 2 && email.length > 5 && password.length >= 6 && confirmPassword === password;
   }, [confirmPassword, email, mode, name, password]);
 
@@ -109,14 +110,14 @@ export default function AuthPanel() {
       }
 
       const approved = role === 'buyer';
-      const { error: profileError } = await supabase.from('profiles').insert({
+      const { error: profileError } = await (supabase.from('profiles') as any).insert({
         id: userId,
         full_name: name,
         email,
         role,
         approved,
         disabled: false,
-      } as any);
+      });
 
       if (profileError) {
         toast.error(profileError.message);
@@ -125,9 +126,8 @@ export default function AuthPanel() {
       }
 
       toast.success(role === 'seller' ? 'Your seller account is awaiting admin approval.' : 'Welcome to Jendal Marketplace!');
-
       setSubmitting(false);
-      window.location.href = role === 'seller' ? '/pending-approval' : '/buyer';
+      router.push(role === 'seller' ? '/pending-approval' : '/buyer');
       return;
     }
 
@@ -145,10 +145,9 @@ export default function AuthPanel() {
       return;
     }
 
-    const { data: profileResponse, error: profileError } = await supabase
-      .from('profiles')
+    const { data: profileResponse, error: profileError } = await (supabase.from('profiles') as any)
       .select('role, approved, disabled')
-      .eq('id' as any, userId as any)
+      .eq('id', userId)
       .single();
 
     const profile = profileResponse as { role: 'buyer' | 'seller' | 'admin'; approved: boolean; disabled?: boolean } | null;
@@ -170,22 +169,22 @@ export default function AuthPanel() {
     setSubmitting(false);
 
     if (profile.role === 'admin' || isAdminEmail(email)) {
-      window.location.href = '/admin';
+      router.push('/admin');
       return;
     }
 
     if (profile.role === 'buyer') {
-      window.location.href = '/buyer';
+      router.push('/buyer');
       return;
     }
 
     if (profile.role === 'seller' && profile.approved) {
-      window.location.href = '/seller';
+      router.push('/seller');
       return;
     }
 
-    window.location.href = '/pending-approval';
-  }, [confirmPassword, email, mode, name, password, role]);
+    router.push('/pending-approval');
+  }, [confirmPassword, email, mode, name, password, role, router]);
 
   return (
     <Card className="relative overflow-hidden rounded-lg border border-white/80 bg-white/95 p-5 shadow-premium backdrop-blur-xl sm:p-7 lg:p-8">
