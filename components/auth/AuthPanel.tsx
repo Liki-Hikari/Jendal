@@ -169,21 +169,21 @@ export default function AuthPanel() {
     setSubmitting(false);
 
     if (profile.role === 'admin' || isAdminEmail(email)) {
-      window.location.href = 'https://jendal.netlify.app/admin'
+      router.push('/admin');
       return;
     }
 
     if (profile.role === 'buyer') {
-     window.location.href = 'https://jendal.netlify.app/buyer'
+      router.push('/buyer');
       return;
     }
 
     if (profile.role === 'seller' && profile.approved) {
-      window.location.href = 'https://jendal.netlify.app/seller'
+      router.push('/seller');
       return;
     }
 
-    window.location.href = 'https://jendal.netlify.app/pending-approval'
+    router.push('/pending-approval');
   }, [confirmPassword, email, mode, name, password, role, router]);
 
   return (
