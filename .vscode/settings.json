@@ -1,0 +1,12 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"c:\\\\Users\\\\User\\\\OneDrive\\\\Desktop\\\\JENDAL\"; python -c \"import json; from pathlib import Path; p=Path\\('package\\.json'\\); t=p\\.read_text\\(\\); print\\('len', len\\(t\\)\\); print\\(repr\\(t\\[-32:\\]\\)\\);\ntry: json\\.loads\\(t\\); print\\('json loads OK'\\);\nexcept Exception as e: print\\('json parse failed', e\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^\\$text = Get-Content package\\.json -Raw; Write-Host \\('Length:' \\+ \\$text\\.Length\\); Write-Host \\('Last:' \\+ \\$text\\.Substring\\(\\[Math\\]::Max\\(0,\\$text\\.Length-32\\)\\)\\); try \\{ \\$null = \\$text \\| ConvertFrom-Json; Write-Host 'json loads OK' \\} catch \\{ Write-Host 'json parse failed'; Write-Host \\$_\\.Exception\\.Message \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
