@@ -70,11 +70,11 @@ export default function HomePage() {
         return;
       }
 
-      const [sellerResult, buyerResult, orderResult] = await Promise.all([
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role' as any, 'seller' as any),
-        supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role' as any, 'buyer' as any),
-        (supabase.from('orders' as any) as any).select('id', { count: 'exact', head: true }),
-      ]);
+     const [sellerResult, buyerResult, orderResult] = await Promise.all([
+  (supabase.from('profiles') as any).select('id', { count: 'exact', head: true }).eq('role', 'seller'),
+  (supabase.from('profiles') as any).select('id', { count: 'exact', head: true }).eq('role', 'buyer'),
+  (supabase.from('orders') as any).select('id', { count: 'exact', head: true }),
+]);
 
       if (!active) {
         return;
