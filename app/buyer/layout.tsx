@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase-client';
 import {
   LayoutDashboard,
@@ -26,12 +26,13 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
   const [profile, setProfile] = useState<any>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   useEffect(() => {
     async function loadProfile() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push('/'); return; }
+      if (!user) {
+        return;
+      }
       const { data } = await (supabase.from('profiles') as any).select('*').eq('id', user.id).single();
       if (!data) {
         return;
@@ -39,11 +40,11 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
       setProfile(data);
     }
     loadProfile();
-  }, [router]);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (

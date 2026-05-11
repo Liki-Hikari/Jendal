@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import AuthPanel from '@/components/auth/AuthPanel';
 import { motion } from 'framer-motion';
 import {
@@ -13,7 +12,6 @@ import {
   Zap,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase-client';
-import { isAdminEmail } from '@/lib/admin';
 
 const highlights = [
   {
@@ -49,29 +47,7 @@ function formatCount(value: number | null) {
 }
 
 export default function HomePage() {
-  const router = useRouter();
   const [metrics, setMetrics] = useState<MetricState>({ sellers: null, buyers: null, orders: null });
-
-  useEffect(() => {
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('role, approved').eq('id', user.id).single();
-        if (profile) {
-          if (profile.role === 'admin' || isAdminEmail(user.email)) {
-            router.push('/admin');
-          } else if (profile.role === 'buyer') {
-            router.push('/buyer');
-          } else if (profile.role === 'seller' && profile.approved) {
-            router.push('/seller');
-          } else {
-            router.push('/pending-approval');
-          }
-        }
-      }
-    }
-    checkAuth();
-  }, [router]);
 
   useEffect(() => {
     let active = true;
