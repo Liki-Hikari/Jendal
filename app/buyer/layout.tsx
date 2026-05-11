@@ -33,7 +33,9 @@ export default function BuyerLayout({ children }: { children: React.ReactNode })
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/'); return; }
       const { data } = await (supabase.from('profiles') as any).select('*').eq('id', user.id).single();
-      if (!data || data.role !== 'buyer') { router.push('/'); return; }
+      if (!data) {
+        return;
+      }
       setProfile(data);
     }
     loadProfile();

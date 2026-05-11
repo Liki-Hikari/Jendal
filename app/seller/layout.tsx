@@ -33,9 +33,7 @@ export default function SellerLayout({ children }: { children: React.ReactNode }
       if (!user) { router.push('/'); return; }
 
       const { data } = await (supabase.from('profiles') as any).select('*').eq('id', user.id).single();
-
-if (!data || data.role !== 'seller' || !data.approved) {
-        router.push('/pending-approval');
+      if (!data) {
         return;
       }
       setProfile(data);
