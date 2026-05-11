@@ -138,6 +138,9 @@ export default function AuthPanel() {
       return;
     }
 
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    console.log('Supabase session after login:', sessionData, 'session error:', sessionError);
+
     const userId = data.user?.id;
     if (!userId) {
       toast.error('Unable to sign in.');
