@@ -127,7 +127,7 @@ export default function AuthPanel() {
 
       toast.success(role === 'seller' ? 'Your seller account is awaiting admin approval.' : 'Welcome to Jendal Marketplace!');
       setSubmitting(false);
-      router.push(role === 'seller' ? '/pending-approval' : '/buyer');
+      window.location.href = role === 'seller' ? '/pending-approval' : '/buyer';
       return;
     }
 
@@ -169,21 +169,21 @@ export default function AuthPanel() {
     setSubmitting(false);
 
     if (profile.role === 'admin' || isAdminEmail(email)) {
-      router.push('/admin');
+      window.location.href = '/admin'; 
       return;
     }
 
     if (profile.role === 'buyer') {
-      router.push('/buyer');
+      window.location.href = '/buyer';
       return;
     }
 
     if (profile.role === 'seller' && profile.approved) {
-      router.push('/seller');
+      window.location.href = '/seller';
       return;
     }
 
-    router.push('/pending-approval');
+    window.location.href = '/pending-approval';
   }, [confirmPassword, email, mode, name, password, role, router]);
 
   return (
