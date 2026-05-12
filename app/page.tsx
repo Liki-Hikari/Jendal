@@ -53,25 +53,37 @@ export default function HomePage() {
   const [metrics, setMetrics] = useState<MetricState>({ sellers: null, buyers: null, orders: null });
 
   useEffect(() => {
+    let ignore = false;
+    
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('role, approved').eq('id', user.id).single();
+      
+      if (user && !ignore) {
+        const { data: profile } = await supabase.from('profiles')
+          .select('role, approved')
+          .eq('id', user.id)
+          .single();
+          
         if (profile) {
           if (profile.role === 'admin' || isAdminEmail(user.email)) {
-            router.push('/admin');
+            router.replace('/admin');
           } else if (profile.role === 'buyer') {
-            router.push('/buyer');
+            router.replace('/buyer');
           } else if (profile.role === 'seller' && profile.approved) {
-            router.push('/seller');
+            router.replace('/seller');
           } else {
-            router.push('/pending-approval');
+            router.replace('/pending-approval');
           }
         }
       }
     }
+    
     checkAuth();
-  }, [router]);
+    
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;

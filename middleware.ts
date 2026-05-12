@@ -6,11 +6,7 @@ import type { Database } from '@/lib/database.types';
 const protectedRoutes = ['/buyer', '/seller', '/pending-approval', '/admin'];
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  const response = NextResponse.next();
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -23,7 +19,6 @@ export async function middleware(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, options);
-            request.cookies.set(name, value);
           });
         },
       },
@@ -33,20 +28,18 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-  // Allow access to non-protected routes
+  // Don't check auth for home page or auth callback
   if (!isProtectedRoute) {
     return response;
   }
 
-  // Refresh session if it exists
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // If no session, redirect to home page
+  // Only redirect if definitely not authenticated
   if (!session) {
     const redirectUrl = new URL('/', request.url);
-    redirectUrl.searchParams.set('redirectedFrom', pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -55,13 +48,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
