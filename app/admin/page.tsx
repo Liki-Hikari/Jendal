@@ -105,8 +105,7 @@ export default function AdminPage() {
 
     if (userError || !user || !isAdminEmail(user.email)) {
       toast.error('Admin access required.');
-      setLoading(false);
-      setRefreshing(false);
+      window.location.href = '/';
       return;
     }
 

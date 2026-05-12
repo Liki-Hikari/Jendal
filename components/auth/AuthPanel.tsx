@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase-client';
 import { toast, Toaster } from 'react-hot-toast';
@@ -44,6 +44,8 @@ type AuthMode = 'login' | 'signup';
 
 export default function AuthPanel() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectedFrom = searchParams.get('redirectedFrom');
   const [mode, setMode] = useState<AuthMode>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -52,7 +54,8 @@ export default function AuthPanel() {
   const [role, setRole] = useState<Role>('buyer');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  
+  // ... rest of your component stays exactly the same
   const canSubmit = useMemo(() => {
     if (mode === 'login') {
       return email.length > 5 && password.length >= 6;
@@ -127,7 +130,12 @@ export default function AuthPanel() {
 
       toast.success(role === 'seller' ? 'Your seller account is awaiting admin approval.' : 'Welcome to Jendal Marketplace!');
       setSubmitting(false);
-      window.location.href = role === 'seller' ? '/pending-approval' : '/buyer';
+      
+      if (role === 'seller') {
+        router.push('/pending-approval');
+      } else {
+        router.push('/buyer');
+      }
       return;
     }
 
@@ -137,9 +145,6 @@ export default function AuthPanel() {
       setSubmitting(false);
       return;
     }
-
-    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-    console.log('Supabase session after login:', sessionData, 'session error:', sessionError);
 
     const userId = data.user?.id;
     if (!userId) {
@@ -171,22 +176,18 @@ export default function AuthPanel() {
     toast.success('Logged in successfully.');
     setSubmitting(false);
 
-    if (profile.role === 'admin' || isAdminEmail(email)) {
-      window.location.href = '/admin'; 
-      return;
-    }
-
-    if (profile.role === 'buyer') {
-      window.location.href = '/buyer';
-      return;
-    }
-
-    if (profile.role === 'seller' && profile.approved) {
-      window.location.href = '/seller';
-      return;
-    }
-
-    window.location.href = '/pending-approval';
+   // After successful login, instead of direct route push:
+if (redirectedFrom) {
+  router.push(redirectedFrom);
+} else if (profile.role === 'admin' || isAdminEmail(email)) {
+  router.push('/admin');
+} else if (profile.role === 'buyer') {
+  router.push('/buyer');
+} else if (profile.role === 'seller' && profile.approved) {
+  router.push('/seller');
+} else {
+  router.push('/pending-approval');
+}
   }, [confirmPassword, email, mode, name, password, role, router]);
 
   return (
