@@ -130,7 +130,7 @@ export default function AuthPanel() {
       
       setTimeout(() => {
         window.location.href = role === 'seller' ? '/pending-approval' : '/buyer';
-      }, 500);
+      }, 2000);
       return;
     }
 
@@ -169,6 +169,7 @@ export default function AuthPanel() {
     }
 
     toast.success('Logged in successfully.');
+    setSubmitting(false);
 
     setTimeout(() => {
       if (redirectedFrom) {
@@ -182,7 +183,7 @@ export default function AuthPanel() {
       } else {
         window.location.href = '/pending-approval';
       }
-    }, 500);
+    }, 2000);
   }, [confirmPassword, email, mode, name, password, role, redirectedFrom]);
 
   return (
